@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <style>
+  body{background-color:black}
+  cnvas{margin:0 auto;display:block;padding:1px;}
+  </style>
+ </head>
+ <body>
+ <canvas id="canvas1" width="420" height="420">
+ Your browser doesn't support the canvas!Try another broswer.
+ </canvas>
+ <script>
+ var mycanvas =document.getElementById("canvas1");
+ var cntx=mycanvas.getContext('2d');
+ cntx.lineCap='round';
+ cntx.strokeStyle="#ffff00";
+ cntx.lineWidth=4;
+ function turn_it()
+ {
+	 cntx.beginPath();
+	 cntx.moveTo(0,0);
+	 //离中心点的距离
+	 move_num=2;//试着修改不同的值以获得不同的图形
+	 //绕中心旋转的距离
+	 rotate_num=0.1;//取0或1之间的值
+	 //转换wei弧度
+	 rads=rotate_num*2*Math.PI;
+	 //计算围绕中心点的位置
+	 for(i=1;i<=100;i++)
+	 {
+		 distance=i*move_num;
+		 turn=i*rads;
+		 //绘制的起始点
+		 x=Math.cos(turn)*distance;
+		 y=Math.sin(turn)*distance;
+		 //绘制线段
+		 cntx.lineTo(x,y);
+	 }
+ }
+ cntx.translate(cntx.canvas.width/2,cntx.canvas.height/2);
+ setInterval(
+ function(){
+	 cntx.clearRect(-cntx.canvas.width/2,-cntx.canvas.height/2,
+	 cntx.canvas.width,cntx.canvas.height);
+	 cntx.rotate(.01);//kong控制速率
+	 turn_it.apply();
+	 cntx.stroke();
+ },10);
+ </script>
+
+  
+ </body>
+</html>

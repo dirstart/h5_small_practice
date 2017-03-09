@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>untitled</title>
+	<style>
+	body,div{margin:0;padding:0;}
+	body{background-image:linear-gradient(45deg,#000,#fff);}
+	p{color:white;}
+	p,input{margin:10px;}
+	div{
+	position:absolute;
+	width:66px;
+	height:45px;
+	background-image:-webkit-radial-gradient(#ace, #f96, #1E90FF);
+	top:100px;
+	left:50px;
+	}
+	</style>
+	<script>
+	window.onload=function()
+	{
+		var oDiv=document.getElementsByTagName("div")[0];
+		var aInput=document.getElementsByTagName("input");
+		var oP=document.getElementsByTagName("p")[0];
+		var i=0;
+		var timer=timerOne=timerTwo=null;
+		var color_flag=true;
+		var now=false;
+
+		function changeColor()
+		{
+			oDiv.style.backgroundImage=color_flag?"linear-gradient(60deg,white,blue)":"linear-gradient(60deg,blue,white)";
+			color_flag=!color_flag;
+		}
+
+		function changeColor2()
+		{
+			oDiv.style.backgroundImage=color_flag?"linear-gradient(60deg,white,green)":"linear-gradient(60deg,green,white)";
+			color_flag=!color_flag;
+		}
+		aInput[0].onclick=function(event)
+		{
+			(event||window.event).cancelBubble=true;
+			/*阻止冒泡   事件传递，   简单的说 document.onclick 和 button.onclick */
+
+			now=false;
+
+			clearEvent(now);//此句是为了使两种模式的切换不产生冲突
+			
+			this.value="上帝模式已经开启，用鼠标决定木块的生死吧";
+			oP.innerHTML="按住鼠标左键，在页面滑动，滑块将按照鼠标轨迹移动";
+
+			timerOne=setInterval(changeColor,500);
+
+			var aPos=[{x:oDiv.offsetLeft,y:oDiv.offsetTop}];
+			//关于移动的正式程序
+			/*var a=0;*/
+			document.onmousedown=function(event)
+			{
+				var event=event||window.event;
+				aPos.push({x:event.clientX,y:event.clientY});
+				document.onmousemove=function(event)
+				{
+					var event=event||window.event;
+				  	/*++a;*/
+					/*console.log(++a);*/
+					aPos.push({x:event.clientX,y:event.clientY});
+					return false;
+				}
+				return false;
+			}
+
+			document.onmouseup=function()
+			{
+				document.onmousemove=null;
+				var timer=setInterval(function()
+				{
+					if(aPos.length==0)
+					{
+						clearInterval(timer);
+						return;
+					};
+					oDiv.style.left=aPos[0].x+"px";
+					oDiv.style.top=aPos[0].y+"px";
+					aPos.shift();
+				},30);
+
+			};
+
+		}
+
+		aInput[1].onclick=function(event)
+		{
+			(event||window.event).cancelBubble=true;
+			now=true;
+			clearEvent(now);
+			this.value="凯撒模式已激活";
+			oP.innerHTML="鼠标点击页面，任务将移动到鼠标的位置！";
+
+			timerTwo=setInterval(changeColor2,500);
+
+			document.onclick=function(event)
+			{
+				var event=event||window.event;
+				startMove(oDiv,{x:event.clientX,y:event.clientY});
+				return false;
+			}
+		}
+		function startMove(obj,oTarget)
+		{
+			clearInterval(obj.timer);
+			obj.timer=setInterval(function()
+			{
+				doMove(obj,oTarget);
+			},30);
+		}
+		function doMove(obj,oTarget)
+		{
+			var iX=(oTarget.x-obj.offsetLeft)/5;
+			var iY=(oTarget.y-obj.offsetTop)/5;
+			/*为什么这里要/5呢*/
+			iX=iX>0?Math.ceil(iX):Math.floor(iX);
+			iY=iY>0?Math.ceil(iY):Math.floor(iY);
+			if(oTarget.x==obj.offsetLeft && oTarget.y==obj.offsetTop)
+			{
+				clearInterval(obj.timer);
+			}
+			else
+			{
+				obj.style.left=obj.offsetLeft+iX+"px";
+				obj.style.top=obj.offsetTop+iY+"px";
+			}
+		}
+
+		function clearEvent(now)
+		{
+			document.onclick=null;
+			document.onmousedown=null;
+			document.onmouseup=null;
+			document.onmousemove=null;
+			clearTimeout(timerOne);
+			clearTimeout(timerTwo);
+			if(now)
+			{
+				aInput[0].value="两种抉择，根据鼠标轨迹位置移动还是";
+			}
+			else
+			{
+				aInput[1].value="根据鼠标点击位置以移动";
+			}
+			for(i=0;i<aInput.length;i++)
+			{
+				aInput[i].onmousedown=aInput[i].onmouseup=function(event)
+				{
+					(event||window.event).cancelBubble=true;
+				};
+			}
+		}
+
+
+	}
+	</script>
+</head>
+<body>
+<input type="button" value="两种抉择，根据鼠标轨迹位置移动还是"/>
+<input type="button" value="根据鼠标点击位置以移动" />
+<p>这里是试验台，现在是正常的状态!</p>
+<div></div>
+</body>
+</html>

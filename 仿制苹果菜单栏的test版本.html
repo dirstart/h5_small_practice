@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>untitled</title>
+	<style>
+	body{margin:0;padding:0;}
+	#menu{
+	position:absolute;
+	bottom:0;
+	width:100%;
+	text-align:center;
+	}
+	#menu img{
+	width:128px;
+	height:128px;
+	}
+	
+	</style>
+	<script>
+	window.onload=function()
+	{
+		var oMenu=document.getElementById("menu");
+		var aImg=oMenu.getElementsByTagName("img");
+		var i=0;
+		var aWidth=[];
+
+		for(i=0;i<aImg.length;i++)
+		{
+			aWidth.push(aImg[i].offsetWidth);
+			aImg[i].style.width=aImg[i].style.height=aImg[i].offsetWidth/2+"px";
+			
+		}
+		//鼠标移动事件
+		document.onmousemove=function()
+		{
+			var event=event||window.event;
+			for(i=0;i<aImg.length;i++)
+			{
+				var a=event.clientX-aImg[i].offsetLeft-aImg[i].offsetWidth/2;
+				var b=event.clientY-aImg[i].offsetTop-oMenu.offsetTop-aImg[i].offsetHeight/2;
+
+				var iScale=1-Math.sqrt(a*a+b*b)/400;
+				if(iScale<0.5)iScale=0.5;
+				aImg[i].style.width=aImg[i].style.height=aWidth[i]*iScale+"px";
+
+
+			}
+		}
+	}
+	</script>
+</head>
+<body>
+<div id="menu">
+<img src="image/1.png"  />
+<img src="image/2.png"  />
+<img src="image/3.png"  />
+<img src="image/4.png" />
+<img src="image/5.png"  />
+<img src="image/6.png"  />
+<img src="image/7.png"  />
+<img src="image/8.png" />
+
+</div>
+</body>
+</html>
